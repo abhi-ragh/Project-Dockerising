@@ -1,0 +1,21 @@
+services:
+    mongo:
+        image: mongo:4.2
+        restart: always 
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER} 
+            MONGO_INITDNB_ROOT_PASSWORD: ${MONGO_PASS}
+        ports: 
+            - "27017:27017"
+        volumes:
+            - mongo-data:/data/db
+    app:
+        build: .
+        environment:
+            MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/mydb?authSource=admin
+        ports: 
+            - "3000:3000"
+        depends_on:
+            - mongo
+volumes:
+    mongo-data:
